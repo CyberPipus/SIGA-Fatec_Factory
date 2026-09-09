@@ -6,7 +6,7 @@ public class Main {
         System.out.println("=== SIGA - Atividade Factory Method ===\n");
 
         CriadorPainel criadorAluno = new CriadorPainelAluno();
-        GerenciadorLogin loginAluno = new GerenciadorLogin(criadorAluno);
+        GerenciadorLogin loginAluno = new GerenciadorLogin(criadorAluno);   
         loginAluno.montarPainel();
         System.out.println();
         

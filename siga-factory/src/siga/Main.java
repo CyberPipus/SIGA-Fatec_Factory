@@ -19,5 +19,9 @@ public class Main {
         GerenciadorLogin loginCoordenador = new GerenciadorLogin(criadorCoordenador);
         loginCoordenador.montarPainel();
         System.out.println();
+
+        CriadorPainel criadorSecretaria = new CriadorPainelSecretaria();
+        GerenciadorLogin loginSecretaria = new GerenciadorLogin(criadorSecretaria);
+        loginSecretaria.montarPainel();
     }
 }

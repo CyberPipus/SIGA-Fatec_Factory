@@ -43,11 +43,61 @@ Siga as etapas da ficha de atividade prática:
 
 1. **Identificar** o acoplamento causado pelo `if/else` com `new` em `GerenciadorLogin`.
 R: No arquivo "GerenciadorLogin" temos o acoplamento de três classes concretas ("PainelAluno","PainelCoordenador" e "PainelProfessor") pelas instanciações diretas ("new") dentro de uma condicional, já violando o princípio Aberto/Fechado. Ou seja, se adicionarmos uma nova classe, por exemplo "PainelSecretaria", teríamos de abrir "GerenciadorLogin" para adicionar mais uma instanciação direta na condicional, comprovando que esta classe não está fechada, e realizar uma alteração em "Main", porém esta estaria prevista pela lógica de negócio então não é indevida. Além do mais o arquivo somente precisa do tipo "Painel" para poder chamar "montar()" e as classes concretas aparecem ali apenas por causa do "new", sendo que o uso já é abstrato, a criação delas que não é. Por fim temos "String tipoUsuario" representando por texto livre o conceito de domínio no perfil, o que faz uma digitação errônea de "PROFESOR" compilar sem erro e somente falhando em execução ao cair no "else".
+
 2. **Simple Factory:** criar uma classe `FabricaPainel` com um método `criar(String tipo)` que centralize a criação e devolva um `Painel`. O `GerenciadorLogin` passa a pedir o painel à fábrica, sem usar `new` das classes concretas.
 R: Criamos a classe "FabricaPainel" via "Simple Factory" para "GerenciadorLogin" não ser mais responsável por criar os painéis ao removermos o "new" das classes concretas de seu código e forçá-lo a trabalhar somente com "Painel", reduzindo a menção de 4 tipos para somente 2. Todavia, ainda não satisfazemos o OCP: a fábrica continua sendo modificada a cada perfil novo, porque a escolha ainda é feita por comparação, ou seja, se quisermos inserir uma classe nova como "PainelSecretaria", somos obrigados a reabrir "FabricaPainel" para contemplar a nova classe.
+
 3. **Factory Method:** refatorar para um criador abstrato (por exemplo, `CriadorPainel`) com um método `criarPainel()`, e uma subclasse por perfil (`CriadorPainelAluno`, `CriadorPainelProfessor`, `CriadorPainelCoordenador`) que sobrescreve esse método. A escolha do painel passa a ser resolvida por polimorfismo.
+
 R: Agora temos a classe abstrata "CriadorPainel" com dois métodos: um abstrato para criar painéis e um concreto para chamar o método abstrato e armazenar o resultado em uma variável (neste caso "painel" do tipo "Painel") e depois chama o método para montar nosso painel,  assim como 3 subclasses ("CriadorPainelALuno", "CriadorPainelProfessor" e "CriadorPainelCoordenador") destinadas a sobrescrever o método abstrato da superclasse para retornarem um tipo de painel específico. Com isso, deixamos a decisão a cargo do arquivo "Main" no momento da construção. Em "new CriadorPainelAluno()" decidimos qual criador precisamos, digamos "criadorAluno", enquanto "new GerenciadorLogin()"  vincula o criador decidido anteriormente à sessão de login correspondente: a do aluno, libertando o código de comparar algo toda vez que for executado ao registrar a decisão no tipo de objeto correspondente ao que chamamos. Também resolvemos definitivamente a questão de violação ao OCP da Etapa 2, na qual precisávamos reabrir "FabricaPainel", nesta etapa. Uma vez que se quisermos adicionar um novo perfil, digamos "Secretaria", não há a necessidade de se abrir nenhuma classe pré-existente para modificação, somente adicionar linhas de código no "Main" para exibir o novo painel, lembrando que isto é previsto e não errôneo, e garantir que os arquivos "PainelSecretaria" e "CriadorPainelSecretaria" estejam na pasta "siga-factory/src/siga". Por fim, comprovamos tudo o que afirmamos anteriormente com a saída sendo idêntica à original proposta pela atividade. Ou seja, não mudamos o comportamento durante a refatoração.  Tudo com a atribuição do "Factory Method", catalogado pelo Gang of Four em 1994, diferenciando este do "Simple Factory", um idioma de programação não catalogado, anteriormente implementado na Etapa 2.
+
 4. **Adicionar** um novo perfil (por exemplo, `SECRETARIA`, com um `PainelSecretaria`) **sem modificar** o código existente — criando apenas as novas classes. Isso comprova o respeito ao OCP.
+R: Adicionamos um novo perfil, a SECRETARIA, via a escrita de dois novos arquivos: "PainelSecretaria" e "CriadorPainelSecretaria", desprovidos da demanda de abrirmos uma classe precedente para tal. Agora, afirmar que o realizamos sem modificar o código torna-se impossível pois devemos exibir o painel da Secretaria saída do terminal junto dos três anteriores.
+Veja agora a comparação das saídas inicial e nova de nossa ativiadae para melhor visualizar nosso resultado:
+**Saída do código antes da Etapa 4 (três perfis):**
+```
+=== SIGA - Atividade Factory Method ===
+
+=== Painel do Aluno ===
+- Minhas disciplinas
+- Notas e frequência
+- Histórico escolar
+
+=== Painel do Professor ===
+- Minhas turmas
+- Lançamento de notas
+- Diário de classe
+
+=== Painel do Coordenador ===
+- Turmas do curso
+- Relatórios de desempenho
+- Gestão de professores
+```
+**Saída do código após a Etapa 4 (quatro perfis):**
+```
+=== SIGA - Atividade Factory Method ===
+
+=== Painel do Aluno ===
+- Minhas disciplinas
+- Notas e frequência
+- Histórico escolar
+
+=== Painel do Professor ===
+- Minhas turmas
+- Lançamento de notas
+- Diário de classe
+
+=== Painel do Coordenador ===
+- Turmas do curso
+- Relatórios de desempenho
+- Gestão de professores
+
+=== Painel da Secretaria ===
+- Gestão de alunos
+- Registro de faltas
+- Relatórios administrativos
+```
+                                                        
 5. **Desenhar** o diagrama de classes da solução final (interface do produto, produtos concretos, criador e criadores concretos).
 
 ## Critério de sucesso

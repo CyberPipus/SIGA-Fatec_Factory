@@ -1,9 +1,5 @@
 package siga;
 
-/**
- * Produto concreto: painel inicial exibido para o perfil ALUNO.
- * (Código inicial da atividade — esta classe está pronta.)
- */
 public class PainelAluno implements Painel {
 
     @Override
